@@ -1,19 +1,24 @@
 import numpy as np
 import wireframe as wf
 
-def Cuboid((x,y,z), (w,h,d)):
+
+def Cuboid(X, size):
     """ Return a wireframe cuboid starting at (x,y,z)
         with width, w, height, h, and depth, d. """
 
+    x,y,z = X
+    w,h,d = size
     cuboid = wf.Wireframe()
     cuboid.addNodes(np.array([[nx,ny,nz] for nx in (x,x+w) for ny in (y,y+h) for nz in (z,z+d)]))
     cuboid.addFaces([(0,1,3,2), (7,5,4,6), (4,5,1,0), (2,3,7,6), (0,2,6,4), (5,7,3,1)])
     
     return cuboid
     
-def Spheroid((x,y,z), (rx, ry, rz), resolution=10):
+def Spheroid(X, R, resolution=10):
     """ Returns a wireframe spheroid centred on (x,y,z)
         with a radii of (rx,ry,rz) in the respective axes. """
+    x,y,z = X
+    rx, ry, rz = R
     
     spheroid   = wf.Wireframe()
     latitudes  = [n*np.pi/resolution for n in range(1,resolution)]
@@ -34,9 +39,14 @@ def Spheroid((x,y,z), (rx, ry, rz), resolution=10):
 
     return spheroid
     
-def HorizontalGrid((x,y,z), (dx,dz), (nx,nz)):
+def HorizontalGrid(X, D, N):
     """ Returns a nx by nz wireframe grid that starts at (x,y,z) with width dx.nx and depth dz.nz. """
     
+    x,y,z = X
+    dx,dz = D
+    nx,nz = N
+    print('x', x, 'y', y, 'z', z, 'dx', dx, 'dy', dy, 'nx', nx, 'nz', nz)
+    asdfsdf
     grid = wf.Wireframe()
     grid.addNodes([[x+n1*dx, y, z+n2*dz] for n1 in range(nx+1) for n2 in range(nz+1)])
     grid.addEdges([(n1*(nz+1)+n2,n1*(nz+1)+n2+1) for n1 in range(nx+1) for n2 in range(nz)])

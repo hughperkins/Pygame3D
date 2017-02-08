@@ -1,4 +1,6 @@
+from __future__ import print_function
 import numpy as np
+
 
 def translationMatrix(dx=0, dy=0, dz=0):
     """ Return matrix for translation along vector (dx, dy, dz). """
@@ -8,11 +10,13 @@ def translationMatrix(dx=0, dy=0, dz=0):
                      [0,0,1,0],
                      [dx,dy,dz,1]])
 
+
 def translateAlongVectorMatrix(vector, distance):
     """ Return matrix for translation along a vector for a given distance. """
     
     unit_vector = np.hstack([unitVector(vector) * distance, 1])
     return np.array([[1,0,0,0],[0,1,0,0],[0,0,1,0], unit_vector])
+
 
 def scaleMatrix(s, cx=0, cy=0, cz=0):
     """ Return matrix for scaling equally along all axes centred on the point (cx,cy,cz). """
@@ -21,6 +25,7 @@ def scaleMatrix(s, cx=0, cy=0, cz=0):
                      [0,s,0,0],
                      [0,0,s,0],
                      [cx*(1-s), cy*(1-s), cz*(1-s), 1]])
+
 
 def rotateXMatrix(radians):
     """ Return matrix for rotating about the x-axis by 'radians' radians """
@@ -32,6 +37,7 @@ def rotateXMatrix(radians):
                      [0,s, c,0],
                      [0,0, 0,1]])
 
+
 def rotateYMatrix(radians):
     """ Return matrix for rotating about the y-axis by 'radians' radians """
     
@@ -41,6 +47,7 @@ def rotateYMatrix(radians):
                      [ 0,1,0,0],
                      [-s,0,c,0],
                      [ 0,0,0,1]])
+
 
 def rotateZMatrix(radians):
     """ Return matrix for rotating about the z-axis by 'radians' radians """
@@ -52,9 +59,12 @@ def rotateZMatrix(radians):
                      [0, 0,1,0],
                      [0, 0,0,1]])
 
-def rotateAboutVector((cx,cy,cz), (x,y,z), radians):
+
+def rotateAboutVector(C, X, radians):
     """ Rotate wireframe about given vector by 'radians' radians. """        
     
+    cx,cy,cz = C
+    x,y,z = X
     # Find angle and matrix needed to rotate vector about the z-axis such that its y-component is 0
     rotZ = np.arctan2(y, x)
     rotZ_matrix = rotateZMatrix(rotZ)
@@ -73,7 +83,8 @@ def rotateAboutVector((cx,cy,cz), (x,y,z), radians):
     
     return matrix
 
-class Wireframe:
+
+class Wireframe(object):
     """ An array of vectors in R3 and list of edges connecting them. """
     
     def __init__(self, nodes=None):
@@ -114,19 +125,20 @@ class Wireframe:
             self.outputFaces()  
     
     def outputNodes(self):
-        print "\n --- Nodes --- "
+        print("\n --- Nodes --- ")
         for i, (x, y, z, _) in enumerate(self.nodes):
-            print "   %d: (%d, %d, %d)" % (i, x, y, z)
+            print("   %d: (%d, %d, %d)" % (i, x, y, z))
 
     def outputEdges(self):
-        print "\n --- Edges --- "
+        print("\n --- Edges --- ")
         for i, (node1, node2) in enumerate(self.edges):
-            print "   %d: %d -> %d" % (i, node1, node2)
+            print("   %d: %d -> %d" % (i, node1, node2))
             
     def outputFaces(self):
-        print "\n --- Faces --- "
+        print("\n --- Faces --- ")
         for i, nodes in enumerate(self.faces):
-            print "   %d: (%s)" % (i, ", ".join(['%d' % n for n in nodes]))
+            print('nodes', nodes)
+            print("   %d: (%s)" % (i, ", ".join(['%d' % n for n in nodes[0]])))
     
     def transform(self, transformation_matrix):
         """ Apply a transformation defined by a transformation matrix. """
@@ -147,7 +159,8 @@ class Wireframe:
         """ Override this function to control wireframe behaviour. """
         pass
 
-class WireframeGroup:
+
+class WireframeGroup(object):
     """ A dictionary of wireframes and methods to manipulate them all together. """
     
     def __init__(self):
@@ -158,17 +171,17 @@ class WireframeGroup:
     
     def output(self):
         for name, wireframe in self.wireframes.items():
-            print name
+            print(name)
             wireframe.output()    
     
     def outputNodes(self):
         for name, wireframe in self.wireframes.items():
-            print name
+            print(name)
             wireframe.outputNodes()
     
     def outputEdges(self):
         for name, wireframe in self.wireframes.items():
-            print name
+            print(name)
             wireframe.outputEdges()
     
     def findCentre(self):
